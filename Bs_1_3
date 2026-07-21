@@ -1,45 +1,44 @@
 class Solution {
     public int singleNonDuplicate(int[] nums) {
-        int left = 0;
-        int right = nums.length - 1;
 
-        while (left <= right) {
+        int n = nums.length;
 
-            int mid = left + (right - left) / 2;
+        if (n == 1)
+            return nums[0];
 
-            // Extreme case 1: first element
-            if (mid == 0) {
-                if (nums[mid] != nums[mid + 1])
-                    return nums[mid];
-            }
+        int st = 0;
+        int end = n - 1;
 
-            // Extreme case 2: last element
-            if (mid == nums.length - 1) {
-                if (nums[mid] != nums[mid - 1])
-                    return nums[mid];
-            }
+        while (st <= end) {
+
+            int mid = st + (end - st) / 2;
+
+            // Extreme case 1
+            if (mid == 0 && nums[0] != nums[1])
+                return nums[mid];
+
+            // Extreme case 2
+            if (mid == n - 1 && nums[n - 1] != nums[n - 2])
+                return nums[mid];
 
             // Found the single element
-            if (nums[mid] != nums[mid - 1] && nums[mid] != nums[mid + 1]) {
+            if (nums[mid - 1] != nums[mid] && nums[mid] != nums[mid + 1])
                 return nums[mid];
-            }
 
-            if (mid % 2 == 0) {
+            if (mid % 2 == 0) { // Even index
 
-                // Even index
-                if (nums[mid] == nums[mid + 1]) {
-                    left = mid + 1;
+                if (nums[mid - 1] == nums[mid]) {
+                    end = mid - 1;
                 } else {
-                    right = mid - 1;
+                    st = mid + 1;
                 }
 
-            } else {
+            } else { // Odd index
 
-                // Odd index
-                if (nums[mid] == nums[mid - 1]) {
-                    left = mid + 1;
+                if (nums[mid - 1] == nums[mid]) {
+                    st = mid + 1;
                 } else {
-                    right = mid - 1;
+                    end = mid - 1;
                 }
 
             }
