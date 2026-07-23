@@ -2,7 +2,7 @@ class Solution {
 
     public boolean isPossible(int[] quantities, int n, int maxProducts) {
 
-        int storesNeeded = 0;
+        int storesNeeded = 0; // similar to count of students
 
         for (int q : quantities) {
             storesNeeded += (q + maxProducts - 1) / maxProducts;
@@ -19,8 +19,9 @@ class Solution {
         int start = 1;
         int end = 0;
 
-        for (int q : quantities)
-            end = Math.max(end, q);
+
+        for (int q : quantities) 
+            end = Math.max(end, q); //get our range
 
         int ans = end;
 
