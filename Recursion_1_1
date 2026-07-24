@@ -2,47 +2,31 @@ import java.util.*;
 
 class Solution {
 
-    Set<List<Integer>> set = new HashSet<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        backtrack(candidates, target, 0, new ArrayList<>(), ans);
+        return ans;
+    }
 
-    private void getAllCombinations(int[] arr, int idx, int target,
-                                    List<List<Integer>> ans,
-                                    List<Integer> comb) {
+    private void backtrack(int[] arr, int target, int idx,
+                           List<Integer> comb,
+                           List<List<Integer>> ans) {
+
+        if (target == 0) {
+            ans.add(new ArrayList<>(comb));
+            return;
+        }
 
         if (idx == arr.length || target < 0) {
             return;
         }
 
-        if (target == 0) {
-            if (!set.contains(comb)) {
-                ans.add(new ArrayList<>(comb));
-                set.add(new ArrayList<>(comb));
-            }
-            return;
-        }
-
-        // Include current element
-
+        // Include current element (can reuse)
         comb.add(arr[idx]);
-
-        // Single use
-        // getAllCombinations(arr, idx + 1, target - arr[idx], ans, comb);
-
-        // Multiple use
-        getAllCombinations(arr, idx, target - arr[idx], ans, comb);
-
+        backtrack(arr, target - arr[idx], idx, comb, ans);
         comb.remove(comb.size() - 1);
 
         // Exclude current element
-        getAllCombinations(arr, idx + 1, target, ans, comb);
-    }
-
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
-
-        List<List<Integer>> ans = new ArrayList<>();
-        List<Integer> comb = new ArrayList<>();
-
-        getAllCombinations(candidates, 0, target, ans, comb);
-
-        return ans;
+        backtrack(arr, target, idx + 1, comb, ans);
     }
 }
