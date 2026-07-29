@@ -1,0 +1,38 @@
+class Solution {
+
+    TreeNode prev = null;
+
+    public int minDiffInBST(TreeNode root) {
+        return minDist(root);
+    }
+
+    private int minDist(TreeNode root) {
+
+        if (root == null) {
+            return Integer.MAX_VALUE;
+        }
+
+        int ans = Integer.MAX_VALUE;
+
+        // 1. Left subtree
+        if (root.left != null) {
+            int leftMin = minDist(root.left);
+            ans = Math.min(ans, leftMin);
+        }
+
+        // 2. Compare with previous node
+        if (prev != null) {
+            ans = Math.min(ans, root.val - prev.val);
+        }
+
+        prev = root;
+
+        // 3. Right subtree
+        if (root.right != null) {
+            int rightMin = minDist(root.right);
+            ans = Math.min(ans, rightMin);
+        }
+
+        return ans;
+    }
+}
