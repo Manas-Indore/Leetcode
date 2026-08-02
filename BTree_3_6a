@@ -1,0 +1,7 @@
+int sumTree(Node root){
+  if(root==null) return 0;
+  int left=sumTree(root.left);
+  int right=sumTree(root.right);
+  root.val+=left+right;
+  return root.val;
+}
