@@ -1,0 +1,17 @@
+class Solution {
+
+    public void kthLevel(TreeNode root, int k) {
+
+        if (root == null) {
+            return;
+        }
+
+        if (k == 1) {
+            System.out.print(root.val + " ");
+            return;
+        }
+
+        kthLevel(root.left, k - 1);
+        kthLevel(root.right, k - 1);
+    }
+}
