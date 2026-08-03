@@ -1,0 +1,35 @@
+class Solution {
+
+    boolean dfs(int src, int parent, boolean[] vis, ArrayList<ArrayList<Integer>> adj) {
+
+        vis[src] = true;
+
+        for (int v : adj.get(src)) {
+
+            if (!vis[v]) {
+                if (dfs(v, src, vis, adj))
+                    return true;
+            } 
+            else if (v != parent) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isCycle(ArrayList<ArrayList<Integer>> adj) {
+
+        int V = adj.size();
+        boolean[] vis = new boolean[V];
+
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) {
+                if (dfs(i, -1, vis, adj))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+}
