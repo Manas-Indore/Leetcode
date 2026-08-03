@@ -1,48 +1,46 @@
 class Solution {
 
-    boolean dfs(int node, ArrayList<ArrayList<Integer>> adj,
-                boolean[] vis, boolean[] pathVis) {
+    boolean isCycleDFS(int src, boolean[] vis, boolean[] recPath,
+                       int[][] prerequisites) {
 
-        vis[node] = true;
-        pathVis[node] = true;
+        vis[src] = true;
+        recPath[src] = true;
 
-        for (int v : adj.get(node)) {
+        for (int i = 0; i < prerequisites.length; i++) {
 
-            if (!vis[v]) {
-                if (dfs(v, adj, vis, pathVis))
+            int v = prerequisites[i][0];
+            int u = prerequisites[i][1];
+
+            // Edge: u -> v
+            if (u == src) {
+
+                if (!vis[v]) {
+                    if (isCycleDFS(v, vis, recPath, prerequisites))
+                        return true;
+                }
+                else if (recPath[v]) {
                     return true;
-            }
-            else if (pathVis[v]) {
-                return true;
+                }
             }
         }
 
-        pathVis[node] = false;
+        recPath[src] = false;
         return false;
     }
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
 
-        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
-
-        for (int i = 0; i < numCourses; i++)
-            adj.add(new ArrayList<>());
-
-        // b -> a
-        for (int[] pre : prerequisites) {
-            adj.get(pre[1]).add(pre[0]);
-        }
-
         boolean[] vis = new boolean[numCourses];
-        boolean[] pathVis = new boolean[numCourses];
+        boolean[] recPath = new boolean[numCourses];
 
         for (int i = 0; i < numCourses; i++) {
+
             if (!vis[i]) {
-                if (dfs(i, adj, vis, pathVis))
-                    return false;   // Cycle exists
+                if (isCycleDFS(i, vis, recPath, prerequisites))
+                    return false;
             }
         }
 
-        return true; // No cycle
+        return true;
     }
 }
