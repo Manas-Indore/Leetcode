@@ -1,0 +1,72 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ * }
+ */
+
+class Solution {
+
+    public void recoverTree(TreeNode root) {
+
+        TreeNode first = null;
+        TreeNode second = null;
+        TreeNode prev = null;
+
+        while (root != null) {
+
+            if (root.left == null) {
+
+                // Process current node
+                if (prev != null && prev.val > root.val) {
+                    if (first == null)
+                        first = prev;
+                    second = root;
+                }
+
+                prev = root;
+                root = root.right;
+
+            } else {
+
+                // Find inorder predecessor
+                TreeNode ip = root.left;
+
+                while (ip.right != null && ip.right != root) {
+                    ip = ip.right;
+                }
+
+                if (ip.right == null) {
+
+                    // Create thread
+                    ip.right = root;
+                    root = root.left;
+
+                } else {
+
+                    // Remove thread
+                    if (prev != null && prev.val > root.val) {
+                        if (first == null)
+                            first = prev;
+                        second = root;
+                    }
+
+                    prev = root;
+                    ip.right = null;
+                    root = root.right;
+                }
+            }
+        }
+
+        // Swap the misplaced nodes
+        if (first != null && second != null) {
+            int temp = first.val;
+            first.val = second.val;
+            second.val = temp;
+        }
+    }
+}
