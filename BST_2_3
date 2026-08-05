@@ -1,0 +1,20 @@
+class Solution {
+
+    private TreeNode helper(int[] preorder, int[] idx, int bound) {
+        if (idx[0] == preorder.length || preorder[idx[0]] > bound) {
+            return null;
+        }
+
+        TreeNode root = new TreeNode(preorder[idx[0]++]);
+
+        root.left = helper(preorder, idx, root.val);
+        root.right = helper(preorder, idx, bound);
+
+        return root;
+    }
+
+    public TreeNode bstFromPreorder(int[] preorder) {
+        int[] idx = {0};   // Mutable index
+        return helper(preorder, idx, Integer.MAX_VALUE);
+    }
+}
