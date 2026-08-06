@@ -1,0 +1,56 @@
+class Solution {
+
+    public static ArrayList<Integer> predecessorSuccessor(TreeNode root, int key) {
+        TreeNode curr = root;
+        TreeNode pred = null;
+        TreeNode succ = null;
+
+        while (curr != null) {
+
+            if (key < curr.data) {
+                succ = curr;
+                curr = curr.left;
+            } 
+            else if (key > curr.data) {
+                pred = curr;
+                curr = curr.right;
+            } 
+            else {
+
+                // Predecessor = Rightmost node in left subtree
+                if (curr.left != null) {
+                    pred = rightMostInLeftSubtree(curr.left);
+                }
+
+                // Successor = Leftmost node in right subtree
+                if (curr.right != null) {
+                    succ = leftMostInRightSubtree(curr.right);
+                }
+
+                break;
+            }
+        }
+
+        ArrayList<Integer> ans = new ArrayList<>();
+        ans.add(pred == null ? -1 : pred.data);
+        ans.add(succ == null ? -1 : succ.data);
+
+        return ans;
+    }
+
+    // Rightmost node in left subtree
+    private static TreeNode rightMostInLeftSubtree(TreeNode root) {
+        while (root.right != null) {
+            root = root.right;
+        }
+        return root;
+    }
+
+    // Leftmost node in right subtree
+    private static TreeNode leftMostInRightSubtree(TreeNode root) {
+        while (root.left != null) {
+            root = root.left;
+        }
+        return root;
+    }
+}
