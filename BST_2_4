@@ -1,0 +1,25 @@
+class BSTIterator {
+
+    private Stack<TreeNode> stack = new Stack<>();
+
+    private void storeLeftNodes(TreeNode root) {
+        while (root != null) {
+            stack.push(root);
+            root = root.left;
+        }
+    }
+
+    public BSTIterator(TreeNode root) {
+        storeLeftNodes(root);
+    }
+
+    public int next() {
+        TreeNode ans = stack.pop();
+        storeLeftNodes(ans.right);
+        return ans.val;
+    }
+
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+}
