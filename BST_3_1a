@@ -1,0 +1,59 @@
+class Solution {
+
+    // Function to merge two BSTs into a balanced BST
+    public Node mergeBST(Node root1, Node root2) {
+        ArrayList<Integer> arr1 = new ArrayList<>();
+        ArrayList<Integer> arr2 = new ArrayList<>();
+
+        inorder(root1, arr1);
+        inorder(root2, arr2);
+
+        ArrayList<Integer> temp = new ArrayList<>();
+
+        int i = 0, j = 0;
+
+        // Merge two sorted arrays
+        while (i < arr1.size() && j < arr2.size()) {
+            if (arr1.get(i) < arr2.get(j)) {
+                temp.add(arr1.get(i++));
+            } else {
+                temp.add(arr2.get(j++));
+            }
+        }
+
+        while (i < arr1.size()) {
+            temp.add(arr1.get(i++));
+        }
+
+        while (j < arr2.size()) {
+            temp.add(arr2.get(j++));
+        }
+
+        return buildBSTFromSorted(temp, 0, temp.size() - 1);
+    }
+
+    // Store inorder traversal in a sorted array
+    void inorder(Node root, ArrayList<Integer> arr) {
+        if (root == null)
+            return;
+
+        inorder(root.left, arr);
+        arr.add(root.data);
+        inorder(root.right, arr);
+    }
+
+    // Build a balanced BST from sorted array
+    Node buildBSTFromSorted(ArrayList<Integer> arr, int st, int end) {
+        if (st > end)
+            return null;
+
+        int mid = st + (end - st) / 2;
+
+        Node root = new Node(arr.get(mid));
+
+        root.left = buildBSTFromSorted(arr, st, mid - 1);
+        root.right = buildBSTFromSorted(arr, mid + 1, end);
+
+        return root;
+    }
+}
