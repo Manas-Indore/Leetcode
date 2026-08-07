@@ -1,0 +1,48 @@
+class Solution {
+
+    // Structure to store information about a subtree
+    static class Info {
+        int min, max, sz;
+
+        Info(int min, int max, int sz) {
+            this.min = min;
+            this.max = max;
+            this.sz = sz;
+        }
+    }
+
+    // Function to find the largest BST
+    static int largestBst(Node root) {
+        Info ans = helper(root);
+        return ans.sz;
+    }
+
+    // Helper function
+    static Info helper(Node root) {
+
+        // Empty tree is a BST
+        if (root == null) {
+            return new Info(Integer.MAX_VALUE, Integer.MIN_VALUE, 0);
+        }
+
+        Info left = helper(root.left);
+        Info right = helper(root.right);
+
+        // Current subtree is a BST
+        if (root.data > left.max && root.data < right.min) {
+
+            int currMin = Math.min(root.data, left.min);
+            int currMax = Math.max(root.data, right.max);
+            int currSize = left.sz + right.sz + 1;
+
+            return new Info(currMin, currMax, currSize);
+        }
+
+        // Not a BST
+        return new Info(
+                Integer.MIN_VALUE,
+                Integer.MAX_VALUE,
+                Math.max(left.sz, right.sz)
+        );
+    }
+}
