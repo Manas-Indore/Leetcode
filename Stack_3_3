@@ -1,0 +1,26 @@
+import java.util.*;
+
+class StockSpanner {
+
+    Stack<int[]> st;
+    int ind = -1;
+
+    StockSpanner() {
+        st = new Stack<>();
+    }
+
+    public int next(int val) {
+
+        ind = ind + 1;
+
+        while (!st.empty() && st.peek()[0] <= val) {
+            st.pop();
+        }
+
+        int ans = ind - (st.empty() ? -1 : st.peek()[1]);
+
+        st.push(new int[]{val, ind});
+
+        return ans;
+    }
+}
