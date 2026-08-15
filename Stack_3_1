@@ -2,59 +2,71 @@ import java.util.*;
 
 class Solution {
     public int orangesRotting(int[][] grid) {
-        int m = grid.length;
-        int n = grid[0].length;
 
+        int n = grid.length;
+        int m = grid[0].length;
+        int ans = 0;
+
+        boolean[][] vis = new boolean[n][m];
+
+        // Queue: {i, j, time}
         Queue<int[]> q = new LinkedList<>();
-        int fresh = 0;
 
-        // Add all rotten oranges initially
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
+        // Push all rotten oranges
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 if (grid[i][j] == 2) {
-                    q.offer(new int[]{i, j});
-                } else if (grid[i][j] == 1) {
-                    fresh++;
+                    q.offer(new int[]{i, j, 0});
+                    vis[i][j] = true;
                 }
             }
         }
 
-        int minutes = 0;
+        // BFS
+        while (!q.isEmpty()) {
 
-        int[][] directions = {
-            {-1, 0},  // up
-            {1, 0},   // down
-            {0, -1},  // left
-            {0, 1}    // right
-        };
+            int[] curr = q.poll();
 
-        while (!q.isEmpty() && fresh > 0) {
-            int size = q.size();
+            int i = curr[0];
+            int j = curr[1];
+            int time = curr[2];
 
-            // Process all oranges that rot during this minute
-            for (int i = 0; i < size; i++) {
-                int[] curr = q.poll();
-                int r = curr[0];
-                int c = curr[1];
+            ans = Math.max(ans, time);
 
-                for (int[] dir : directions) {
-                    int nr = r + dir[0];
-                    int nc = c + dir[1];
-
-                    if (nr >= 0 && nr < m &&
-                        nc >= 0 && nc < n &&
-                        grid[nr][nc] == 1) {
-
-                        grid[nr][nc] = 2;
-                        fresh--;
-                        q.offer(new int[]{nr, nc});
-                    }
-                }
+            // Top
+            if (i - 1 >= 0 && !vis[i - 1][j] && grid[i - 1][j] == 1) {
+                q.offer(new int[]{i - 1, j, time + 1});
+                vis[i - 1][j] = true;
             }
 
-            minutes++;
+            // Right
+            if (j + 1 < m && !vis[i][j + 1] && grid[i][j + 1] == 1) {
+                q.offer(new int[]{i, j + 1, time + 1});
+                vis[i][j + 1] = true;
+            }
+
+            // Bottom
+            if (i + 1 < n && !vis[i + 1][j] && grid[i + 1][j] == 1) {
+                q.offer(new int[]{i + 1, j, time + 1});
+                vis[i + 1][j] = true;
+            }
+
+            // Left
+            if (j - 1 >= 0 && !vis[i][j - 1] && grid[i][j - 1] == 1) {
+                q.offer(new int[]{i, j - 1, time + 1});
+                vis[i][j - 1] = true;
+            }
         }
 
-        return fresh == 0 ? minutes : -1;
+        // Check for fresh oranges
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1 && !vis[i][j]) {
+                    return -1;
+                }
+            }
+        }
+
+        return ans;
     }
 }
