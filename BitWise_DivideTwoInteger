@@ -1,0 +1,50 @@
+class Solution {
+    public int divide(int dividend, int divisor) {
+
+        // Division by zero
+        if (divisor == 0)
+            return Integer.MAX_VALUE;
+
+        // Check sign
+        boolean sign = true; // positive
+
+        if (dividend < 0 && divisor > 0 ||
+            dividend > 0 && divisor < 0) {
+            sign = false;
+        }
+
+        // Use long to handle Integer.MIN_VALUE
+        long n = Math.abs((long) dividend);
+        long d = Math.abs((long) divisor);
+
+        long ans = 0;
+
+        while (n >= d) {
+
+            long temp = d;
+            long count = 1;
+
+            // Keep doubling divisor
+            while (temp <= n - temp) {
+                temp = temp << 1;
+                count = count << 1;
+            }
+
+            ans += count;
+            n -= temp;
+        }
+
+        // Apply sign
+        if (!sign)
+            ans = -ans;
+
+        // Overflow case
+        if (ans > Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
+
+        if (ans < Integer.MIN_VALUE)
+            return Integer.MIN_VALUE;
+
+        return (int) ans;
+    }
+}
