@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class Main {
+
+    static void topoSort(int V, ArrayList<ArrayList<Integer>> adj) {
+
+        ArrayList<Integer> res = new ArrayList<>();
+
+        // calc indegree
+        int[] indeg = new int[V];
+
+        for (int u = 0; u < V; u++) {
+            for (int v : adj.get(u)) {
+                indeg[v]++;
+            }
+        }
+
+        // 0 indegree -> queue
+        Queue<Integer> q = new LinkedList<>();
+
+        for (int i = 0; i < V; i++) {
+            if (indeg[i] == 0) {
+                q.add(i);
+            }
+        }
+
+        // bfs
+        while (q.size() > 0) {
+
+            int curr = q.peek();
+            q.remove();
+
+            res.add(curr);
+
+            for (int v : adj.get(curr)) {
+                indeg[v]--;
+
+                if (indeg[v] == 0) {
+                    q.add(v);
+                }
+            }
+        }
+
+        // result
+        for (int val : res) {
+            System.out.print(val + " ");
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        int V = 6;
+
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        adj.get(5).add(2);
+        adj.get(5).add(0);
+        adj.get(4).add(0);
+        adj.get(4).add(1);
+        adj.get(2).add(3);
+        adj.get(3).add(1);
+
+        topoSort(V, adj);
+    }
+}
