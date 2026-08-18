@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class Main {
+
+    static void dfs(int curr, boolean[] vis, Stack<Integer> s,
+                    ArrayList<ArrayList<Integer>> adj) {
+
+        vis[curr] = true;
+
+        for (int v : adj.get(curr)) {
+            if (!vis[v]) {
+                dfs(v, vis, s, adj);
+            }
+        }
+
+        s.push(curr);
+    }
+
+    static void topoSort(int V, ArrayList<ArrayList<Integer>> adj) {
+
+        boolean[] vis = new boolean[V];
+        Stack<Integer> s = new Stack<>();
+
+        for (int i = 0; i < V; i++) {
+            if (!vis[i]) {
+                dfs(i, vis, s, adj);
+            }
+        }
+
+        while (s.size() > 0) {
+            System.out.print(s.peek() + " ");
+            s.pop();
+        }
+
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+
+        int V = 6;
+
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        // Edges
+        adj.get(5).add(2);
+        adj.get(5).add(0);
+        adj.get(4).add(0);
+        adj.get(4).add(1);
+        adj.get(2).add(3);
+        adj.get(3).add(1);
+
+        topoSort(V, adj);
+    }
+}
