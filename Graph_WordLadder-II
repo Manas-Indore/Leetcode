@@ -1,0 +1,117 @@
+class Solution {
+
+    public List<List<String>> findLadders(String beginWord, String endWord,
+                                          List<String> wordList) {
+
+        List<List<String>> ans = new ArrayList<>();
+
+        Set<String> dict = new HashSet<>(wordList);
+
+        if (!dict.contains(endWord)) {
+            return ans;
+        }
+
+        // parent[word] = all words from the previous level
+        // that can reach word
+        Map<String, List<String>> parent = new HashMap<>();
+
+        Set<String> currentLevel = new HashSet<>();
+        currentLevel.add(beginWord);
+
+        boolean found = false;
+
+        while (!currentLevel.isEmpty() && !found) {
+
+            Set<String> nextLevel = new HashSet<>();
+
+            // Remove current level from dictionary
+            // so we don't go backwards
+            for (String word : currentLevel) {
+                dict.remove(word);
+            }
+
+            for (String word : currentLevel) {
+
+                char[] chars = word.toCharArray();
+
+                for (int i = 0; i < chars.length; i++) {
+
+                    char original = chars[i];
+
+                    for (char c = 'a'; c <= 'z'; c++) {
+
+                        if (c == original) {
+                            continue;
+                        }
+
+                        chars[i] = c;
+
+                        String nextWord = new String(chars);
+
+                        if (dict.contains(nextWord)) {
+
+                            // First time seeing this word
+                            if (!nextLevel.contains(nextWord)) {
+                                nextLevel.add(nextWord);
+                            }
+
+                            // Store all parents from this level
+                            parent.putIfAbsent(nextWord, new ArrayList<>());
+                            parent.get(nextWord).add(word);
+
+                            if (nextWord.equals(endWord)) {
+                                found = true;
+                            }
+                        }
+                    }
+
+                    chars[i] = original;
+                }
+            }
+
+            currentLevel = nextLevel;
+        }
+
+        if (!found) {
+            return ans;
+        }
+
+        // Build paths backwards
+        List<String> path = new ArrayList<>();
+        path.add(endWord);
+
+        dfs(endWord, beginWord, parent, path, ans);
+
+        return ans;
+    }
+
+    private void dfs(String word, String beginWord,
+                     Map<String, List<String>> parent,
+                     List<String> path,
+                     List<List<String>> ans) {
+
+        if (word.equals(beginWord)) {
+
+            List<String> sequence = new ArrayList<>(path);
+
+            Collections.reverse(sequence);
+
+            ans.add(sequence);
+
+            return;
+        }
+
+        if (!parent.containsKey(word)) {
+            return;
+        }
+
+        for (String p : parent.get(word)) {
+
+            path.add(p);
+
+            dfs(p, beginWord, parent, path, ans);
+
+            path.remove(path.size() - 1);
+        }
+    }
+}
