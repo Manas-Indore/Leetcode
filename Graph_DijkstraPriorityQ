@@ -1,0 +1,76 @@
+import java.util.*;
+
+class Main {
+
+    static class Pair {
+        int node;
+        int dist;
+
+        Pair(int node, int dist) {
+            this.node = node;
+            this.dist = dist;
+        }
+    }
+
+    static int[] dijkstra(int V, ArrayList<ArrayList<Pair>> adj, int src) {
+
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>(
+            (a, b) -> a.dist - b.dist
+        );
+
+        dist[src] = 0;
+        pq.add(new Pair(src, 0));
+
+        while (!pq.isEmpty()) {
+
+            Pair curr = pq.poll();
+            int node = curr.node;
+            int d = curr.dist;
+
+            // Ignore outdated entry
+            if (d > dist[node])
+                continue;
+
+            for (Pair edge : adj.get(node)) {
+
+                int next = edge.node;
+                int weight = edge.dist;
+
+                if (dist[node] + weight < dist[next]) {
+                    dist[next] = dist[node] + weight;
+                    pq.add(new Pair(next, dist[next]));
+                }
+            }
+        }
+
+        return dist;
+    }
+
+    public static void main(String[] args) {
+
+        int V = 5;
+
+        ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
+
+        for (int i = 0; i < V; i++)
+            adj.add(new ArrayList<>());
+
+        // u -> v with weight w
+        adj.get(0).add(new Pair(1, 2));
+        adj.get(0).add(new Pair(2, 4));
+
+        adj.get(1).add(new Pair(2, 1));
+        adj.get(1).add(new Pair(3, 7));
+
+        adj.get(2).add(new Pair(4, 3));
+
+        adj.get(3).add(new Pair(4, 1));
+
+        int[] ans = dijkstra(V, adj, 0);
+
+        System.out.println(Arrays.toString(ans));
+    }
+}
