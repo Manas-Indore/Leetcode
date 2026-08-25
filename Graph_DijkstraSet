@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Main {
+
+    static class Pair {
+        int dist;
+        int node;
+
+        Pair(int dist, int node) {
+            this.dist = dist;
+            this.node = node;
+        }
+    }
+
+    static int[] dijkstra(int V, ArrayList<ArrayList<Pair>> adj, int src) {
+
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+
+        TreeSet<Pair> set = new TreeSet<>(
+            (a, b) -> {
+                if (a.dist != b.dist)
+                    return Integer.compare(a.dist, b.dist);
+
+                return Integer.compare(a.node, b.node);
+            }
+        );
+
+        dist[src] = 0;
+        set.add(new Pair(0, src));
+
+        while (!set.isEmpty()) {
+
+            Pair curr = set.pollFirst();
+
+            int d = curr.dist;
+            int node = curr.node;
+
+            for (Pair edge : adj.get(node)) {
+
+                int next = edge.node;
+                int weight = edge.dist;
+
+                if (d + weight < dist[next]) {
+
+                    if (dist[next] != Integer.MAX_VALUE) {
+                        set.remove(new Pair(dist[next], next));
+                    }
+
+                    dist[next] = d + weight;
+
+                    set.add(new Pair(dist[next], next));
+                }
+            }
+        }
+
+        return dist;
+    }
+}
