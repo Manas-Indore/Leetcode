@@ -1,0 +1,94 @@
+import java.util.*;
+
+class Solution {
+
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+
+        // Adjacency list
+        ArrayList<ArrayList<Pair>> adj = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < flights.length; i++) {
+            int u = flights[i][0];
+            int v = flights[i][1];
+            int cost = flights[i][2];
+
+            adj.get(u).add(new Pair(v, cost));
+        }
+
+        // {stops, node, cost}
+        Queue<Tuple> q = new LinkedList<>();
+
+        q.add(new Tuple(0, src, 0));
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+
+        dist[src] = 0;
+
+        while (!q.isEmpty()) {
+
+            Tuple t = q.poll();
+
+            int stops = t.stops;
+            int node = t.node;
+            int cost = t.cost;
+
+            // If we have already used k stops, don't go further
+            if (stops > k) {
+                continue;
+            }
+
+            for (Pair it : adj.get(node)) {
+
+                int adjNode = it.node;
+                int edgeWeight = it.cost;
+
+                if (cost + edgeWeight < dist[adjNode]
+                        && stops <= k) {
+
+                    dist[adjNode] = cost + edgeWeight;
+
+                    q.add(new Tuple(
+                            stops + 1,
+                            adjNode,
+                            cost + edgeWeight
+                    ));
+                }
+            }
+        }
+
+        if (dist[dst] == Integer.MAX_VALUE) {
+            return -1;
+        }
+
+        return dist[dst];
+    }
+
+    // Pair: destination node + flight cost
+    class Pair {
+        int node;
+        int cost;
+
+        Pair(int node, int cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+    }
+
+    // Tuple: number of stops + node + total cost
+    class Tuple {
+        int stops;
+        int node;
+        int cost;
+
+        Tuple(int stops, int node, int cost) {
+            this.stops = stops;
+            this.node = node;
+            this.cost = cost;
+        }
+    }
+}
