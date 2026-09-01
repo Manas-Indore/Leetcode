@@ -1,0 +1,118 @@
+import java.util.*;
+
+class Solution {
+
+    public List<Integer> numOfIslands(int n, int m, int[][] operators) {
+
+        DisjointSet ds = new DisjointSet(n * m);
+        int[][] visited = new int[n][m];
+
+        List<Integer> ans = new ArrayList<>();
+        int islands = 0;
+
+        int[] dr = {-1, 0, 1, 0};
+        int[] dc = {0, 1, 0, -1};
+
+        for (int[] operation : operators) {
+
+            int row = operation[0];
+            int col = operation[1];
+
+            // If land already exists
+            if (visited[row][col] == 1) {
+                ans.add(islands);
+                continue;
+            }
+
+            visited[row][col] = 1;
+            islands++;
+
+            int currentNode = row * m + col;
+
+            for (int k = 0; k < 4; k++) {
+
+                int newRow = row + dr[k];
+                int newCol = col + dc[k];
+
+                if (isValid(newRow, newCol, n, m)
+                        && visited[newRow][newCol] == 1) {
+
+                    int adjacentNode = newRow * m + newCol;
+
+                    if (ds.findUPar(currentNode)
+                            != ds.findUPar(adjacentNode)) {
+
+                        ds.unionBySize(currentNode, adjacentNode);
+                        islands--;
+                    }
+                }
+            }
+
+            ans.add(islands);
+        }
+
+        return ans;
+    }
+
+    private boolean isValid(int row, int col, int n, int m) {
+        return row >= 0 && row < n && col >= 0 && col < m;
+    }
+}
+
+
+class DisjointSet {
+
+    List<Integer> parent = new ArrayList<>();
+    List<Integer> size = new ArrayList<>();
+
+    DisjointSet(int n) {
+
+        for (int i = 0; i < n; i++) {
+            parent.add(i);
+            size.add(1);
+        }
+    }
+
+    public int findUPar(int node) {
+
+        if (node == parent.get(node)) {
+            return node;
+        }
+
+        int ultimateParent =
+                findUPar(parent.get(node));
+
+        parent.set(node, ultimateParent);
+
+        return parent.get(node);
+    }
+
+    public void unionBySize(int u, int v) {
+
+        int parentU = findUPar(u);
+        int parentV = findUPar(v);
+
+        if (parentU == parentV) {
+            return;
+        }
+
+        if (size.get(parentU) < size.get(parentV)) {
+
+            parent.set(parentU, parentV);
+
+            size.set(
+                    parentV,
+                    size.get(parentV) + size.get(parentU)
+            );
+
+        } else {
+
+            parent.set(parentV, parentU);
+
+            size.set(
+                    parentU,
+                    size.get(parentU) + size.get(parentV)
+            );
+        }
+    }
+}
