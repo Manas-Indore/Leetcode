@@ -1,0 +1,110 @@
+import java.util.*;
+
+class DisjointSet {
+
+    ArrayList<Integer> parent = new ArrayList<>();
+    ArrayList<Integer> size = new ArrayList<>();
+
+    public DisjointSet(int n) {
+        for (int i = 0; i < n; i++) {
+            parent.add(i);
+            size.add(1);
+        }
+    }
+
+    public int findUPar(int node) {
+        if (parent.get(node) == node) {
+            return node;
+        }
+
+        int ultimateParent = findUPar(parent.get(node));
+        parent.set(node, ultimateParent);
+
+        return ultimateParent;
+    }
+
+    public void unionBySize(int u, int v) {
+
+        int ulpU = findUPar(u);
+        int ulpV = findUPar(v);
+
+        if (ulpU == ulpV) {
+            return;
+        }
+
+        if (size.get(ulpU) < size.get(ulpV)) {
+            parent.set(ulpU, ulpV);
+            size.set(ulpV, size.get(ulpV) + size.get(ulpU));
+        } else {
+            parent.set(ulpV, ulpU);
+            size.set(ulpU, size.get(ulpU) + size.get(ulpV));
+        }
+    }
+}
+
+class Solution {
+
+    public List<List<String>> accountsMerge(List<List<String>> details) {
+
+        int n = details.size();
+
+        DisjointSet ds = new DisjointSet(n);
+
+        HashMap<String, Integer> mailMap = new HashMap<>();
+
+        // Map every email to its account number
+        for (int i = 0; i < n; i++) {
+
+            for (int j = 1; j < details.get(i).size(); j++) {
+
+                String email = details.get(i).get(j);
+
+                if (!mailMap.containsKey(email)) {
+                    mailMap.put(email, i);
+                } else {
+                    ds.unionBySize(i, mailMap.get(email));
+                }
+            }
+        }
+
+        // Store merged emails for each ultimate parent
+        ArrayList<ArrayList<String>> mergedMail = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            mergedMail.add(new ArrayList<>());
+        }
+
+        for (Map.Entry<String, Integer> entry : mailMap.entrySet()) {
+
+            String email = entry.getKey();
+            int account = entry.getValue();
+
+            int parent = ds.findUPar(account);
+
+            mergedMail.get(parent).add(email);
+        }
+
+        List<List<String>> ans = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+
+            if (mergedMail.get(i).size() == 0) {
+                continue;
+            }
+
+            Collections.sort(mergedMail.get(i));
+
+            List<String> temp = new ArrayList<>();
+
+            // Add account name
+            temp.add(details.get(i).get(0));
+
+            // Add all merged emails
+            temp.addAll(mergedMail.get(i));
+
+            ans.add(temp);
+        }
+
+        return ans;
+    }
+}
