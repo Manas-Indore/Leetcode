@@ -1,0 +1,127 @@
+import java.util.*;
+
+class DisjointSet {
+
+    List<Integer> rank = new ArrayList<>();
+    List<Integer> parent = new ArrayList<>();
+    List<Integer> size = new ArrayList<>();
+
+    public DisjointSet(int n) {
+        for (int i = 0; i <= n; i++) {
+            rank.add(0);
+            parent.add(i);
+            size.add(1);
+        }
+    }
+
+    public int findUPar(int node) {
+        if (node == parent.get(node)) {
+            return node;
+        }
+
+        int ultimateParent = findUPar(parent.get(node));
+        parent.set(node, ultimateParent);
+
+        return parent.get(node);
+    }
+
+    public void unionByRank(int u, int v) {
+
+        int ultimateParentU = findUPar(u);
+        int ultimateParentV = findUPar(v);
+
+        if (ultimateParentU == ultimateParentV) {
+            return;
+        }
+
+        if (rank.get(ultimateParentU) < rank.get(ultimateParentV)) {
+            parent.set(ultimateParentU, ultimateParentV);
+        }
+        else if (rank.get(ultimateParentV) < rank.get(ultimateParentU)) {
+            parent.set(ultimateParentV, ultimateParentU);
+        }
+        else {
+            parent.set(ultimateParentV, ultimateParentU);
+            rank.set(
+                ultimateParentU,
+                rank.get(ultimateParentU) + 1
+            );
+        }
+    }
+
+    public void unionBySize(int u, int v) {
+
+        int ultimateParentU = findUPar(u);
+        int ultimateParentV = findUPar(v);
+
+        if (ultimateParentU == ultimateParentV) {
+            return;
+        }
+
+        if (size.get(ultimateParentU) < size.get(ultimateParentV)) {
+
+            parent.set(ultimateParentU, ultimateParentV);
+
+            size.set(
+                ultimateParentV,
+                size.get(ultimateParentU) + size.get(ultimateParentV)
+            );
+        }
+        else {
+
+            parent.set(ultimateParentV, ultimateParentU);
+
+            size.set(
+                ultimateParentU,
+                size.get(ultimateParentU) + size.get(ultimateParentV)
+            );
+        }
+    }
+}
+
+
+class Solution {
+
+    public int removeStones(int[][] stones) {
+
+        int maxRow = 0;
+        int maxCol = 0;
+
+        // Find maximum row and column
+        for (int[] stone : stones) {
+            maxRow = Math.max(maxRow, stone[0]);
+            maxCol = Math.max(maxCol, stone[1]);
+        }
+
+        // Nodes for rows + nodes for columns
+        DisjointSet ds = new DisjointSet(maxRow + maxCol + 1);
+
+        HashMap<Integer, Integer> stoneNodes = new HashMap<>();
+
+        for (int i = 0; i < stones.length; i++) {
+
+            int rowNode = stones[i][0];
+
+            // Offset column nodes so row and column nodes don't overlap
+            int colNode = stones[i][1] + maxRow + 1;
+
+            ds.unionBySize(rowNode, colNode);
+
+            stoneNodes.put(rowNode, 1);
+            stoneNodes.put(colNode, 1);
+        }
+
+        int components = 0;
+
+        for (Map.Entry<Integer, Integer> entry : stoneNodes.entrySet()) {
+
+            int node = entry.getKey();
+
+            if (ds.findUPar(node) == node) {
+                components++;
+            }
+        }
+
+        return stones.length - components;
+    }
+}
