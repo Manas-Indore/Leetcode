@@ -1,0 +1,8 @@
+XOR
+
+Check if bit is set or not
+(num>>bit_no)&1
+
+Turning on a bit 
+
+num | (1<<bit_no)
