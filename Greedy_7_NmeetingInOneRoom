@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    
+    static class Data {
+        int start;
+        int end;
+        int pos;
+        
+        Data(int start, int end, int pos) {
+            this.start = start;
+            this.end = end;
+            this.pos = pos;
+        }
+    }
+    
+    public static ArrayList<Integer> maxMeetings(int[] start, int[] end, int n) {
+        
+        Data[] arr = new Data[n];
+        
+        // Store start, end and original position
+        for (int i = 0; i < n; i++) {
+            arr[i] = new Data(start[i], end[i], i + 1);
+        }
+        
+        // Sort according to ending time
+        Arrays.sort(arr, (a, b) -> {
+            if (a.end == b.end)
+                return a.pos - b.pos;
+            return a.end - b.end;
+        });
+        
+        ArrayList<Integer> ans = new ArrayList<>();
+        
+        // Select first meeting
+        int cnt = 1;
+        int freeTime = arr[0].end;
+        ans.add(arr[0].pos);
+        
+        // Select remaining meetings
+        for (int i = 1; i < n; i++) {
+            
+            if (arr[i].start > freeTime) {
+                cnt++;
+                freeTime = arr[i].end;
+                ans.add(arr[i].pos);
+            }
+        }
+        
+        return ans;
+    }
+}
