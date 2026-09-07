@@ -3,43 +3,39 @@ class Solution {
 
         int n = ratings.length;
 
-        if (n == 1)
-            return 1;
-
         int sum = 1;
         int i = 1;
 
         while (i < n) {
 
-            // Equal ratings
+            // Equal
             if (ratings[i] == ratings[i - 1]) {
-                sum = sum + 1;
+                sum=sum+1;
                 i++;
                 continue;
             }
 
-            // Increasing slope
+            // Increasing
             int peak = 1;
 
             while (i < n && ratings[i] > ratings[i - 1]) {
-                peak++;
-                sum = sum + peak;
+                peak+=1;
+                sum += peak;
                 i++;
             }
 
-            // Decreasing slope
+            // Decreasing
             int down = 1;
 
             while (i < n && ratings[i] < ratings[i - 1]) {
-                down++;
-                sum = sum + down;
+                sum += down;
                 i++;
+                down++;
             }
 
-            // Peak was counted twice if both
-            // increasing and decreasing slopes exist
+            // Peak may need more candy
             if (down > peak) {
-                sum = sum + down - peak;
+                sum += down - peak;
             }
         }
 
