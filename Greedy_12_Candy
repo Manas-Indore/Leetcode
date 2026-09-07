@@ -26,17 +26,21 @@ class Solution {
         for (int i = n - 2; i >= 0; i--) {
 
             if (ratings[i] > ratings[i + 1]) {
+
                 curr = right + 1;
                 right = curr;
+
             } 
             else {
+
                 curr = 1;
+                right = 1;       // IMPORTANT
             }
 
             sum = sum + Math.max(left[i], curr);
         }
 
-        // Last element
+        // Last child
         sum = sum + left[n - 1];
 
         return sum;
