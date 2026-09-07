@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int findPlatform(int[] arr, int[] dep) {
+
+        Arrays.sort(arr);
+        Arrays.sort(dep);
+
+        int i = 0;
+        int j = 0;
+
+        int count = 0;
+        int maxCount = 0;
+
+        while (i < arr.length) {
+
+            if (arr[i] <= dep[j]) {
+                // Train arrives before current train departs
+                count++;
+                i++;
+
+                maxCount = Math.max(maxCount, count);
+            }
+            else {
+                // Train departs, platform becomes free
+                count--;
+                j++;
+            }
+        }
+
+        return maxCount;
+    }
+}
