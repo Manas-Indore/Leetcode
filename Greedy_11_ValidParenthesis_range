@@ -1,0 +1,45 @@
+class Solution {
+
+    public boolean checkValidString(String s) {
+        return solve(s, 0, 0, 0);
+    }
+
+    public boolean solve(String s, int ind, int min, int max) {
+
+        // max < 0 means even the best possibility
+        // has more ')' than '('
+        if (max < 0)
+            return false;
+
+        // We cannot have negative minimum
+        if (min < 0)
+            min = 0;
+
+        // Reached end
+        if (ind == s.length()) {
+            return min == 0;
+        }
+
+        if (s.charAt(ind) == '(') {
+
+            min = min + 1;
+            max = max + 1;
+
+        } 
+        else if (s.charAt(ind) == ')') {
+
+            min = min - 1;
+            max = max - 1;
+
+        } 
+        else { // '*'
+
+            // '*' can be ')'  -> min - 1
+            // '*' can be '('  -> max + 1
+            min = min - 1;
+            max = max + 1;
+        }
+
+        return solve(s, ind + 1, min, max);
+    }
+}
