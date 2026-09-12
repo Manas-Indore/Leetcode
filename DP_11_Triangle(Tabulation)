@@ -1,0 +1,34 @@
+class Solution {
+
+    public int minimumTotal(List<List<Integer>> triangle) {
+
+        int n = triangle.size();
+
+        int[] front = new int[n];
+        int[] cur = new int[n];
+
+        // Copy last row
+        for (int j = 0; j < n; j++) {
+            front[j] = triangle.get(n - 1).get(j);
+        }
+
+        // Move from bottom to top
+        for (int i = n - 2; i >= 0; i--) {
+
+            for (int j = i; j >= 0; j--) {
+
+                int down = triangle.get(i).get(j) + front[j];
+
+                int diagonal = triangle.get(i).get(j) + front[j + 1];
+
+                cur[j] = Math.min(down, diagonal);
+            }
+
+            // Current row becomes front for next iteration
+            front = cur;
+            cur = new int[n];
+        }
+
+        return front[0];
+    }
+}
