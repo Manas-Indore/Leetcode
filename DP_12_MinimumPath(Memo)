@@ -1,0 +1,49 @@
+class Solution {
+
+    public int f(int i, int j, int[][] matrix, int[][] dp) {
+
+        // Out of bounds
+        if (j < 0 || j >= matrix[0].length)
+            return (int)-1e9;
+
+        // First row
+        if (i == 0)
+            return matrix[0][j];
+
+        // Already calculated
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        // Three possible directions
+        int u = matrix[i][j] + f(i - 1, j, matrix, dp);
+        int ld = matrix[i][j] + f(i - 1, j - 1, matrix, dp);
+        int rd = matrix[i][j] + f(i - 1, j + 1, matrix, dp);
+
+        // Store maximum
+        return dp[i][j] = Math.max(u, Math.max(ld, rd));
+    }
+
+    public int getMaxPathSum(int[][] matrix) {
+
+        int n = matrix.length;
+        int m = matrix[0].length;
+
+        int[][] dp = new int[n][m];
+
+        // Initialize dp with -1
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dp[i][j] = -1;
+            }
+        }
+
+        int maxi = (int)-1e9;
+
+        // Try starting from every cell in the last row
+        for (int j = 0; j < m; j++) {
+            maxi = Math.max(maxi, f(n - 1, j, matrix, dp));
+        }
+
+        return maxi;
+    }
+}
