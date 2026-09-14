@@ -1,0 +1,62 @@
+class Solution {
+
+    public boolean canPartition(int[] nums) {
+
+        int n = nums.length;
+
+        int totalSum = 0;
+
+        // Calculate total sum
+        for (int i = 0; i < n; i++) {
+            totalSum += nums[i];
+        }
+
+        // If total sum is odd, cannot divide equally
+        if (totalSum % 2 != 0) {
+            return false;
+        }
+
+        int target = totalSum / 2;
+
+        return subsetSumToK(n, target, nums);
+    }
+
+    public boolean subsetSumToK(int n, int k, int[] arr) {
+
+        boolean[] prev = new boolean[k + 1];
+        boolean[] cur = new boolean[k + 1];
+
+        // Target 0 is always possible
+        prev[0] = true;
+
+        // First element
+        if (arr[0] <= k) {
+            prev[arr[0]] = true;
+        }
+
+        for (int ind = 1; ind < n; ind++) {
+
+            cur[0] = true;
+
+            for (int target = 1; target <= k; target++) {
+
+                // Not take
+                boolean notTake = prev[target];
+
+                // Take
+                boolean take = false;
+
+                if (arr[ind] <= target) {
+                    take = prev[target - arr[ind]];
+                }
+
+                cur[target] = take || notTake;
+            }
+
+            prev = cur;
+            cur = new boolean[k + 1];
+        }
+
+        return prev[k];
+    }
+}
