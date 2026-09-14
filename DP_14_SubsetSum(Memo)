@@ -1,0 +1,50 @@
+class Solution {
+
+    public boolean subsetSumToK(int n, int k, int[] arr) {
+
+        int[][] dp = new int[n][k + 1];
+
+        // -1 means not calculated
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= k; j++) {
+                dp[i][j] = -1;
+            }
+        }
+
+        return f(n - 1, k, arr, dp);
+    }
+
+    public boolean f(int ind, int target, int[] arr, int[][] dp) {
+
+        // Target achieved
+        if (target == 0) {
+            return true;
+        }
+
+        // Only one element left
+        if (ind == 0) {
+            return arr[0] == target;
+        }
+
+        // Already calculated
+        if (dp[ind][target] != -1) {
+            return dp[ind][target] == 1;
+        }
+
+        // Don't take current element
+        boolean notTake = f(ind - 1, target, arr, dp);
+
+        // Take current element
+        boolean take = false;
+
+        if (arr[ind] <= target) {
+            take = f(ind - 1, target - arr[ind], arr, dp);
+        }
+
+        boolean ans = take || notTake;
+
+        dp[ind][target] = ans ? 1 : 0;
+
+        return ans;
+    }
+}
