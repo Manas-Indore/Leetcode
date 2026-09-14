@@ -1,0 +1,42 @@
+class Solution {
+
+    public boolean subsetSumToK(int n, int k, int[] arr) {
+
+        boolean[] prev = new boolean[k + 1];
+        boolean[] cur = new boolean[k + 1];
+
+        // Target 0 is always possible
+        prev[0] = true;
+
+        // First element
+        if (arr[0] <= k) {
+            prev[arr[0]] = true;
+        }
+
+        for (int ind = 1; ind < n; ind++) {
+
+            // Target 0 is always possible
+            cur[0] = true;
+
+            for (int target = 1; target <= k; target++) {
+
+                // Don't take
+                boolean notTake = prev[target];
+
+                // Take
+                boolean take = false;
+
+                if (arr[ind] <= target) {
+                    take = prev[target - arr[ind]];
+                }
+
+                cur[target] = take || notTake;
+            }
+
+            prev = cur;
+            cur = new boolean[k + 1];
+        }
+
+        return prev[k];
+    }
+}
