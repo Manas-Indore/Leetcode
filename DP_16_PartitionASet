@@ -1,0 +1,58 @@
+class Solution {
+    public int minimumDifference(int[] arr) {
+
+        int n = arr.length;
+
+        int totSum = 0;
+        for (int i = 0; i < n; i++) {
+            totSum += arr[i];
+        }
+
+        int k = totSum;
+
+        boolean[] prev = new boolean[k + 1];
+        boolean[] cur = new boolean[k + 1];
+
+        // Target 0 is always possible
+        prev[0] = true;
+
+        // First element
+        if (arr[0] <= k) {
+            prev[arr[0]] = true;
+        }
+
+        // DP
+        for (int ind = 1; ind < n; ind++) {
+
+            for (int target = 1; target <= k; target++) {
+
+                boolean notTake = prev[target];
+
+                boolean take = false;
+
+                if (arr[ind] <= target) {
+                    take = prev[target - arr[ind]];
+                }
+
+                cur[target] = take || notTake;
+            }
+
+            prev = cur;
+        }
+
+        // Find minimum difference
+        int mini = Integer.MAX_VALUE;
+
+        for (int s1 = 0; s1 <= totSum / 2; s1++) {
+
+            if (prev[s1] == true) {
+
+                int s2 = totSum - s1;
+
+                mini = Math.min(mini, Math.abs(s2 - s1));
+            }
+        }
+
+        return mini;
+    }
+}
