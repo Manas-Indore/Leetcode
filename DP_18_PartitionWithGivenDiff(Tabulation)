@@ -1,0 +1,61 @@
+class Solution {
+
+    static final int MOD = 1000000007;
+
+    public int countPartitions(int[] arr, int d) {
+
+        int totalSum = 0;
+
+        for (int num : arr) {
+            totalSum += num;
+        }
+
+        if (totalSum - d < 0 || (totalSum - d) % 2 != 0) {
+            return 0;
+        }
+
+        int target = (totalSum - d) / 2;
+
+        return findWays(arr, target);
+    }
+
+    public int findWays(int[] nums, int target) {
+
+        int n = nums.length;
+
+        int[] prev = new int[target + 1];
+
+        // First element
+        if (nums[0] == 0) {
+            prev[0] = 2;
+        } else {
+            prev[0] = 1;
+
+            if (nums[0] <= target) {
+                prev[nums[0]] = 1;
+            }
+        }
+
+        for (int ind = 1; ind < n; ind++) {
+
+            int[] cur = new int[target + 1];
+
+            for (int sum = 0; sum <= target; sum++) {
+
+                int notTake = prev[sum];
+
+                int take = 0;
+
+                if (nums[ind] <= sum) {
+                    take = prev[sum - nums[ind]];
+                }
+
+                cur[sum] = (notTake + take) % MOD;
+            }
+
+            prev = cur;
+        }
+
+        return prev[target];
+    }
+}
