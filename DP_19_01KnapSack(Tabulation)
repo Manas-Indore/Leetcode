@@ -1,0 +1,35 @@
+import java.util.*;
+
+class Solution {
+
+    static int knapsack(int[] wt, int[] val, int n, int maxWeight) {
+
+        int[][] dp = new int[n][maxWeight + 1];
+
+        // Base case
+        for (int W = wt[0]; W <= maxWeight; W++) {
+            dp[0][W] = val[0];
+        }
+
+        // Fill the DP table
+        for (int ind = 1; ind < n; ind++) {
+
+            for (int W = 0; W <= maxWeight; W++) {
+
+                // Don't take
+                int notTake = dp[ind - 1][W];
+
+                // Take
+                int take = Integer.MIN_VALUE;
+
+                if (wt[ind] <= W) {
+                    take = val[ind] + dp[ind - 1][W - wt[ind]];
+                }
+
+                dp[ind][W] = Math.max(take, notTake);
+            }
+        }
+
+        return dp[n - 1][maxWeight];
+    }
+}
