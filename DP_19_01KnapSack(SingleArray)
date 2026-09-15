@@ -1,0 +1,32 @@
+class Solution {
+
+    static int knapsack(int[] wt, int[] val, int n, int maxWeight) {
+
+        int[] dp = new int[maxWeight + 1];
+
+        // Base case
+        for (int W = wt[0]; W <= maxWeight; W++) {
+            dp[W] = val[0];
+        }
+
+        // Process each item
+        for (int ind = 1; ind < n; ind++) {
+
+            // IMPORTANT: go backwards
+            for (int W = maxWeight; W >= 0; W--) {
+
+                int notTake = dp[W];
+
+                int take = Integer.MIN_VALUE;
+
+                if (wt[ind] <= W) {
+                    take = val[ind] + dp[W - wt[ind]];
+                }
+
+                dp[W] = Math.max(take, notTake);
+            }
+        }
+
+        return dp[maxWeight];
+    }
+}
