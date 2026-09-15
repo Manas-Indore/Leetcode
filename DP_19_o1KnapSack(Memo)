@@ -1,0 +1,40 @@
+class Solution {
+
+    static int f(int ind, int W, int[] wt, int[] val, int[][] dp) {
+
+        // Base case
+        if (ind == 0) {
+            if (wt[0] <= W)
+                return val[0];
+            return 0;
+        }
+
+        // Already calculated
+        if (dp[ind][W] != -1)
+            return dp[ind][W];
+
+        // Don't take
+        int notTake = f(ind - 1, W, wt, val, dp);
+
+        // Take
+        int take = Integer.MIN_VALUE;
+
+        if (wt[ind] <= W) {
+            take = val[ind] + f(ind - 1, W - wt[ind], wt, val, dp);
+        }
+
+        return dp[ind][W] = Math.max(take, notTake);
+    }
+
+    static int knapsack(int[] weight, int[] value, int n, int maxWeight) {
+
+        int[][] dp = new int[n][maxWeight + 1];
+
+        // Fill with -1
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+
+        return f(n - 1, maxWeight, weight, value, dp);
+    }
+}
