@@ -1,0 +1,46 @@
+class Solution {
+
+    int f(int ind, int sum, int[] nums, int[][] dp) {
+
+        // Base case
+        if (sum == 0) {
+            return 1;
+        }
+
+        if (ind == 0) {
+            return nums[0] == sum ? 1 : 0;
+        }
+
+        if (dp[ind][sum] != -1) {
+            return dp[ind][sum];
+        }
+
+        // Not take
+        int notTake = f(ind - 1, sum, nums, dp);
+
+        // Take
+        int take = 0;
+
+        if (nums[ind] <= sum) {
+            take = f(ind - 1, sum - nums[ind], nums, dp);
+        }
+
+        return dp[ind][sum] = notTake + take;
+    }
+
+    public int perfectSum(int[] nums, int target) {
+
+        int n = nums.length;
+
+        int[][] dp = new int[n][target + 1];
+
+        // Initialize with -1
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= target; j++) {
+                dp[i][j] = -1;
+            }
+        }
+
+        return f(n - 1, target, nums, dp);
+    }
+}
