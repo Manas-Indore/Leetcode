@@ -1,0 +1,34 @@
+class Solution {
+
+    public int cutRod(int[] price, int n) {
+
+        // prev[w] = maximum profit for rod length w
+        int[] prev = new int[n + 1];
+
+        // Base case: only length-1 pieces
+        for (int N = 0; N <= n; N++) {
+            prev[N] = N * price[0];
+        }
+
+        // Process pieces of length 2 to n
+        for (int ind = 1; ind < n; ind++) {
+
+            int rodLength = ind + 1;
+
+            for (int N = 0; N <= n; N++) {
+
+                int notTake = prev[N];
+
+                int take = Integer.MIN_VALUE;
+
+                if (rodLength <= N) {
+                    take = price[ind] + prev[N - rodLength];
+                }
+
+                prev[N] = Math.max(take, notTake);
+            }
+        }
+
+        return prev[n];
+    }
+}
