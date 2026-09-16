@@ -1,0 +1,32 @@
+class Solution {
+
+    public int unboundedKnapsack(int n, int W, int[] val, int[] wt) {
+
+        int[] prev = new int[W + 1];
+
+        // Base case: only item 0
+        for (int w = 0; w <= W; w++) {
+            prev[w] = (w / wt[0]) * val[0];
+        }
+
+        // Process remaining items
+        for (int ind = 1; ind < n; ind++) {
+
+            for (int w = 0; w <= W; w++) {
+
+                int notTake = prev[w];
+
+                int take = 0;
+
+                if (wt[ind] <= w) {
+                    // Same array because item can be taken unlimited times
+                    take = val[ind] + prev[w - wt[ind]];
+                }
+
+                prev[w] = Math.max(take, notTake);
+            }
+        }
+
+        return prev[W];
+    }
+}
