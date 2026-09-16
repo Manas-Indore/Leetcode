@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+
+    int f(int ind, int N, int[] price, int[][] dp) {
+
+        // Base case
+        if (ind == 0) {
+            return N * price[0];
+        }
+
+        // Already calculated
+        if (dp[ind][N] != -1) {
+            return dp[ind][N];
+        }
+
+        // Don't take current piece
+        int notTake = f(ind - 1, N, price, dp);
+
+        // Take current piece
+        int take = Integer.MIN_VALUE;
+
+        int rodLength = ind + 1;
+
+        if (rodLength <= N) {
+            // Stay at same index because we can take unlimited pieces
+            take = price[ind] + f(ind, N - rodLength, price, dp);
+        }
+
+        return dp[ind][N] = Math.max(take, notTake);
+    }
+
+    public int cutRod(int[] price, int n) {
+
+        int[][] dp = new int[n][n + 1];
+
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+
+        return f(n - 1, n, price, dp);
+    }
+}
