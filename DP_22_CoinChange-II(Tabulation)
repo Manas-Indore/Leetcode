@@ -1,0 +1,42 @@
+class Solution {
+
+    public int change(int amount, int[] coins) {
+
+        int n = coins.length;
+
+        int[] prev = new int[amount + 1];
+        int[] cur = new int[amount + 1];
+
+        // Base case: using only coins[0]
+        for (int T = 0; T <= amount; T++) {
+            if (T % coins[0] == 0)
+                prev[T] = 1;
+            else
+                prev[T] = 0;
+        }
+
+        // Remaining coins
+        for (int ind = 1; ind < n; ind++) {
+
+            for (int T = 0; T <= amount; T++) {
+
+                // Not take
+                int notTake = prev[T];
+
+                // Take
+                int take = 0;
+
+                if (coins[ind] <= T) {
+                    take = cur[T - coins[ind]];
+                }
+
+                cur[T] = take + notTake;
+            }
+
+            prev = cur;
+            cur = new int[amount + 1];
+        }
+
+        return prev[amount];
+    }
+}
