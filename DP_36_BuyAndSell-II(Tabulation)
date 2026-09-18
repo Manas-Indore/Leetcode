@@ -1,0 +1,41 @@
+class Solution {
+
+    public int maxProfit(int[] prices) {
+
+        int n = prices.length;
+
+        long[] ahead = new long[2];
+        long[] cur = new long[2];
+
+        ahead[0] = ahead[1] = 0;
+
+        for (int ind = n - 1; ind >= 0; ind--) {
+
+            for (int buy = 0; buy <= 1; buy++) {
+
+                long profit = 0;
+
+                if (buy == 0) {
+                    // Buy
+                    profit = Math.max(
+                        -prices[ind] + ahead[1],
+                        ahead[0]
+                    );
+                } 
+                else {
+                    // Sell
+                    profit = Math.max(
+                        prices[ind] + ahead[0],
+                        ahead[1]
+                    );
+                }
+
+                cur[buy] = profit;
+            }
+
+            ahead = cur.clone();
+        }
+
+        return (int) ahead[0];
+    }
+}
