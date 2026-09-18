@@ -1,0 +1,41 @@
+class Solution {
+
+    public int maxProfit(int k, int[] prices) {
+
+        int n = prices.length;
+
+        int[][] after = new int[2][k + 1];
+        int[][] cur = new int[2][k + 1];
+
+        for (int ind = n - 1; ind >= 0; ind--) {
+
+            for (int buy = 0; buy <= 1; buy++) {
+
+                for (int cap = 1; cap <= k; cap++) {
+
+                    if (buy == 1) {
+
+                        // Buy
+                        cur[buy][cap] = Math.max(
+                            -prices[ind] + after[0][cap],
+                            after[1][cap]
+                        );
+
+                    } else {
+
+                        // Sell
+                        cur[buy][cap] = Math.max(
+                            prices[ind] + after[1][cap - 1],
+                            after[0][cap]
+                        );
+                    }
+                }
+            }
+
+            after = cur;
+            cur = new int[2][k + 1];
+        }
+
+        return after[1][k];
+    }
+}
