@@ -1,0 +1,42 @@
+class Solution {
+
+    int[][] dp;
+
+    int f(int ind, int tranNo, int[] prices, int n, int k) {
+
+        // Base case
+        if (ind == n || tranNo == 2 * k)
+            return 0;
+
+        // Already calculated
+        if (dp[ind][tranNo] != -1)
+            return dp[ind][tranNo];
+
+        if (tranNo % 2 == 0) {
+            // Buy
+            return dp[ind][tranNo] = Math.max(
+                -prices[ind] + f(ind + 1, tranNo + 1, prices, n, k),
+                f(ind + 1, tranNo, prices, n, k)
+            );
+        }
+
+        // Sell
+        return dp[ind][tranNo] = Math.max(
+            prices[ind] + f(ind + 1, tranNo + 1, prices, n, k),
+            f(ind + 1, tranNo, prices, n, k)
+        );
+    }
+
+    public int maxProfit(int k, int[] prices) {
+
+        int n = prices.length;
+
+        dp = new int[n][2 * k];
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+
+        return f(0, 0, prices, n, k);
+    }
+}
