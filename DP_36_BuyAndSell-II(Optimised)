@@ -1,0 +1,26 @@
+class Solution {
+
+    public int maxProfit(int[] prices) {
+
+        int aheadBuy = 0;
+        int aheadNotBuy = 0;
+
+        for (int ind = prices.length - 1; ind >= 0; ind--) {
+
+            int curNotBuy = Math.max(
+                prices[ind] + aheadBuy,
+                aheadNotBuy
+            );
+
+            int curBuy = Math.max(
+                -prices[ind] + aheadNotBuy,
+                aheadBuy
+            );
+
+            aheadBuy = curBuy;
+            aheadNotBuy = curNotBuy;
+        }
+
+        return aheadBuy;
+    }
+}
