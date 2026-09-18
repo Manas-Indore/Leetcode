@@ -1,0 +1,56 @@
+class Solution {
+
+    public boolean isMatch(String s, String p) {
+
+        int n = p.length();
+        int m = s.length();
+
+        boolean[] prev = new boolean[m + 1];
+        boolean[] cur = new boolean[m + 1];
+
+        // Empty pattern and empty text
+        prev[0] = true;
+
+        // Pattern is empty but text is not
+        for (int j = 1; j <= m; j++) {
+            prev[j] = false;
+        }
+
+        for (int i = 1; i <= n; i++) {
+
+            // Calculate dp[i][0]
+            boolean flag = true;
+
+            for (int k = 1; k <= i; k++) {
+                if (p.charAt(k - 1) != '*') {
+                    flag = false;
+                    break;
+                }
+            }
+
+            cur[0] = flag;
+
+            for (int j = 1; j <= m; j++) {
+
+                if (p.charAt(i - 1) == s.charAt(j - 1)
+                        || p.charAt(i - 1) == '?') {
+
+                    cur[j] = prev[j - 1];
+
+                } else if (p.charAt(i - 1) == '*') {
+
+                    // '*' matches empty OR one/more characters
+                    cur[j] = prev[j] || cur[j - 1];
+
+                } else {
+
+                    cur[j] = false;
+                }
+            }
+
+            prev = cur.clone();
+        }
+
+        return prev[m];
+    }
+}
