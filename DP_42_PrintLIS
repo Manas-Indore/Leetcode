@@ -1,0 +1,50 @@
+class Solution {
+
+    public int[] printLIS(int[] arr) {
+
+        int n = arr.length;
+
+        int[] dp = new int[n];
+        int[] hash = new int[n];
+
+        int maxi = 1;
+        int lastIndex = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            dp[i] = 1;
+            hash[i] = i;
+
+            for (int prev = 0; prev < i; prev++) {
+
+                if (arr[prev] < arr[i] && 1 + dp[prev] > dp[i]) {
+
+                    dp[i] = 1 + dp[prev];
+                    hash[i] = prev;
+                }
+            }
+
+            if (dp[i] > maxi) {
+                maxi = dp[i];
+                lastIndex = i;
+            }
+        }
+
+        // Store LIS
+        int[] lis = new int[maxi];
+
+        int index = maxi - 1;
+
+        while (hash[lastIndex] != lastIndex) {
+
+            lis[index] = arr[lastIndex];
+            index--;
+
+            lastIndex = hash[lastIndex];
+        }
+
+        lis[index] = arr[lastIndex];
+
+        return lis;
+    }
+}
