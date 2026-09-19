@@ -1,0 +1,27 @@
+class Solution {
+
+    public int maxProfit(int[] prices) {
+
+        int n = prices.length;
+
+        // dp[n+2][2] because we use ind+2
+        int[][] dp = new int[n + 2][2];
+
+        for (int ind = n - 1; ind >= 0; ind--) {
+
+            // buy == 1
+            dp[ind][1] = Math.max(
+                -prices[ind] + dp[ind + 1][0],
+                dp[ind + 1][1]
+            );
+
+            // buy == 0
+            dp[ind][0] = Math.max(
+                prices[ind] + dp[ind + 2][1],
+                dp[ind + 1][0]
+            );
+        }
+
+        return dp[0][1];
+    }
+}
