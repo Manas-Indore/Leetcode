@@ -1,0 +1,84 @@
+class Solution {
+
+    static final int MOD = 1000000007;
+
+    int f(int i, int j, int isTrue, String exp, int[][][] dp) {
+
+        // Base case
+        if (i > j)
+            return 0;
+
+        if (i == j) {
+            if (isTrue == 1)
+                return exp.charAt(i) == 'T' ? 1 : 0;
+            else
+                return exp.charAt(i) == 'F' ? 1 : 0;
+        }
+
+        // Already calculated
+        if (dp[i][j][isTrue] != -1)
+            return dp[i][j][isTrue];
+
+        long ways = 0;
+
+        // Operators are at i+1, i+3, i+5...
+        for (int ind = i + 1; ind <= j - 1; ind += 2) {
+
+            int lT = f(i, ind - 1, 1, exp, dp);
+            int lF = f(i, ind - 1, 0, exp, dp);
+
+            int rT = f(ind + 1, j, 1, exp, dp);
+            int rF = f(ind + 1, j, 0, exp, dp);
+
+            char op = exp.charAt(ind);
+
+            if (op == '&') {
+
+                if (isTrue == 1) {
+                    ways = (ways + (long) lT * rT) % MOD;
+                } else {
+                    ways = (ways + (long) lT * rF) % MOD;
+                    ways = (ways + (long) lF * rT) % MOD;
+                    ways = (ways + (long) lF * rF) % MOD;
+                }
+
+            } else if (op == '|') {
+
+                if (isTrue == 1) {
+                    ways = (ways + (long) lT * rT) % MOD;
+                    ways = (ways + (long) lT * rF) % MOD;
+                    ways = (ways + (long) lF * rT) % MOD;
+                } else {
+                    ways = (ways + (long) lF * rF) % MOD;
+                }
+
+            } else { // XOR '^'
+
+                if (isTrue == 1) {
+                    ways = (ways + (long) lT * rF) % MOD;
+                    ways = (ways + (long) lF * rT) % MOD;
+                } else {
+                    ways = (ways + (long) lT * rT) % MOD;
+                    ways = (ways + (long) lF * rF) % MOD;
+                }
+            }
+        }
+
+        return dp[i][j][isTrue] = (int) ways;
+    }
+
+    public int countWays(String expression) {
+
+        int n = expression.length();
+
+        int[][][] dp = new int[n][n][2];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Arrays.fill(dp[i][j], -1);
+            }
+        }
+
+        return f(0, n - 1, 1, expression, dp);
+    }
+}
