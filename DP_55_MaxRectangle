@@ -1,59 +1,64 @@
-class Solution {
-    public int largestRectangleArea(int[] heights) {
+import java.util.*;
 
-        int n = heights.length;
+class Solution {
+
+    public int largestRectangleArea(int[] histo) {
 
         Stack<Integer> st = new Stack<>();
-
-        int[] leftSmall = new int[n];
-        int[] rightSmall = new int[n];
-
-        // Find left smaller element
-        for (int i = 0; i < n; i++) {
-
-            while (!st.isEmpty() && heights[st.peek()] >= heights[i]) {
-                st.pop();
-            }
-
-            if (st.isEmpty())
-                leftSmall[i] = 0;
-            else
-                leftSmall[i] = st.peek() + 1;
-
-            st.push(i);
-        }
-
-        // Clear stack to reuse
-        while (!st.isEmpty()) {
-            st.pop();
-        }
-
-        // Find right smaller element
-        for (int i = n - 1; i >= 0; i--) {
-
-            while (!st.isEmpty() && heights[st.peek()] >= heights[i]) {
-                st.pop();
-            }
-
-            if (st.isEmpty())
-                rightSmall[i] = n - 1;
-            else
-                rightSmall[i] = st.peek() - 1;
-
-            st.push(i);
-        }
-
         int maxA = 0;
+        int n = histo.length;
 
-        // Calculate maximum area
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i <= n; i++) {
 
-            int width = rightSmall[i] - leftSmall[i] + 1;
-            int area = heights[i] * width;
+            while (!st.isEmpty() &&
+                   (i == n || histo[st.peek()] >= histo[i])) {
 
-            maxA = Math.max(maxA, area);
+                int height = histo[st.peek()];
+                st.pop();
+
+                int width;
+
+                if (st.isEmpty())
+                    width = i;
+                else
+                    width = i - st.peek() - 1;
+
+                maxA = Math.max(maxA, width * height);
+            }
+
+            if (i < n)
+                st.push(i);
         }
 
         return maxA;
+    }
+
+    public int maximalRectangle(char[][] mat) {
+
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int maxArea = 0;
+
+        int[] height = new int[m];
+
+        for (int i = 0; i < n; i++) {
+
+            // Build histogram
+            for (int j = 0; j < m; j++) {
+
+                if (mat[i][j] == '1')
+                    height[j]++;
+                else
+                    height[j] = 0;
+            }
+
+            // Find largest rectangle in current histogram
+            int area = largestRectangleArea(height);
+
+            maxArea = Math.max(maxArea, area);
+        }
+
+        return maxArea;
     }
 }
