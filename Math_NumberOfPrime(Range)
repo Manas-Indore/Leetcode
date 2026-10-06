@@ -1,0 +1,57 @@
+class Solution {
+    public int countPrimesInRange(int l, int r) {
+
+        // Generate primes up to sqrt(r)
+        int N = 100000;
+        boolean[] prime = new boolean[N + 1];
+
+        for (int i = 2; i <= N; i++)
+            prime[i] = true;
+
+        for (int i = 2; i * i <= N; i++) {
+            if (prime[i]) {
+                for (int j = i * i; j <= N; j += i) {
+                    prime[j] = false;
+                }
+            }
+        }
+
+        // Segmented sieve
+        boolean[] isPrime = new boolean[r - l + 1];
+
+        for (int i = 0; i < isPrime.length; i++)
+            isPrime[i] = true;
+
+        for (int i = 2; i * i <= r; i++) {
+
+            if (prime[i]) {
+
+                int start = Math.max(i * i, ((l + i - 1) / i) * i);
+
+                for (int j = start; j <= r; j += i) {
+                    isPrime[j - l] = false;
+                }
+            }
+        }
+
+        // Handle numbers less than 2
+        if (l == 0) {
+            isPrime[0] = false;
+            if (r >= 1)
+                isPrime[1] = false;
+        } 
+        else if (l == 1) {
+            isPrime[0] = false;
+        }
+
+        // Count primes
+        int count = 0;
+
+        for (int i = 0; i < isPrime.length; i++) {
+            if (isPrime[i])
+                count++;
+        }
+
+        return count;
+    }
+}
