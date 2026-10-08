@@ -1,35 +1,24 @@
-import java.util.*;
-
 class Solution {
-    public int totalFruit(int[] arr) {
+    public int longestOnes(int[] nums, int k) {
+        int left = 0;
+        int zeros = 0;
+        int maxLen = 0;
 
-        int l = 0, r = 0, maxLen = 0;
+        for (int right = 0; right < nums.length; right++) {
 
-        HashMap<Integer, Integer> mpp = new HashMap<>();
+            if (nums[right] == 0) {
+                zeros++;
+            }
 
-        while (r < arr.length) {
-
-            mpp.put(arr[r], mpp.getOrDefault(arr[r], 0) + 1);
-
-            if (mpp.size() > 2) {
-
-                while (mpp.size() > 2) {
-
-                    mpp.put(arr[l], mpp.get(arr[l]) - 1);
-
-                    if (mpp.get(arr[l]) == 0) {
-                        mpp.remove(arr[l]);
-                    }
-
-                    l++;
+            while (zeros > k) {
+                if (nums[left] == 0) {
+                    zeros--;
                 }
+                left++;
             }
 
-            if (mpp.size() <= 2) {
-                maxLen = Math.max(maxLen, r - l + 1);
-            }
-
-            r++;
+            int len = right - left + 1;
+            maxLen = Math.max(maxLen, len);
         }
 
         return maxLen;
