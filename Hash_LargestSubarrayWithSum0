@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    public int maxLen(int[] a, int n) {
+        Map<Long, Integer> preSumMap = new HashMap<>();
+
+        long sum = 0;
+        int maxLen = 0;
+
+        for (int i = 0; i < n; i++) {
+            sum += a[i];
+
+            if (sum == 0) {
+                maxLen = Math.max(maxLen, i + 1);
+            }
+
+            if (preSumMap.containsKey(sum)) {
+                int len = i - preSumMap.get(sum);
+                maxLen = Math.max(maxLen, len);
+            } else {
+                preSumMap.put(sum, i);
+            }
+        }
+
+        return maxLen;
+    }
+}
