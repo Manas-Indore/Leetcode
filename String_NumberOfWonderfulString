@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public long wonderfulSubstrings(String word) {
+        HashMap<Integer, Integer> mp = new HashMap<>();
+
+        mp.put(0, 1); // Initially, mask 0 has appeared once
+
+        int cur_xor = 0;
+        long result = 0;
+
+        for (char ch : word.toCharArray()) {
+            int shift = ch - 'a';
+
+            cur_xor ^= (1 << shift);
+
+            // All characters have even frequency
+            result += mp.getOrDefault(cur_xor, 0);
+
+            // Exactly one character has odd frequency
+            for (char ch1 = 'a'; ch1 <= 'j'; ch1++) {
+                shift = ch1 - 'a';
+
+                int check_xor = cur_xor ^ (1 << shift);
+
+                result += mp.getOrDefault(check_xor, 0);
+            }
+
+            mp.put(cur_xor, mp.getOrDefault(cur_xor, 0) + 1);
+        }
+
+        return result;
+    }
+}
